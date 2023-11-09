@@ -1,56 +1,37 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { Table, Row, Rows } from "react-native-table-component";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 
-const CoinDetail = ({ coin, onBackPress }) => {
-  const tableData = [
-    ["Symbol", coin.symbol],
-    ["Price", `$${parseFloat(coin.lastPrice).toFixed(2)}`],
-    ["Price Change", `${coin.priceChange}`],
-    ["Price Change Percentage", `${coin.priceChangePercent}%`],
-    ["Weighted Avg Price", `${coin.weightedAvgPrice}`],
-    ["Prev Close Price", `${coin.prevClosePrice}`],
-    ["Last Qty", `${coin.lastQty}`],
-    ["Bid Price", `${coin.bidPrice}`],
-    ["Bid Qty", `${coin.bidQty}`],
-    ["Ask Price", `${coin.askPrice}`],
-    ["Ask Qty", `${coin.askQty}`],
-    ["Open Price", `${coin.openPrice}`],
-    ["High Price", `${coin.highPrice}`],
-    ["Low Price", `${coin.lowPrice}`],
-    ["Volume", `${coin.volume}`],
-    ["Quote Volume", `${coin.quoteVolume}`],
-    ["Open Time", `${coin.openTime}`],
-    ["Close Time", `${coin.closeTime}`],
-    ["First ID", `${coin.firstId}`],
-    ["Last ID", `${coin.lastId}`],
-    ["Count", `${coin.count}`],
-    // Agrega más detalles de la moneda aquí
-  ];
+const CoinDetail = ({ coin, onBackPress  }) => {
+  const dataKeys = Object.keys(coin);
+  const dataValues = Object.values(coin);
+  const tableData = [];
+  for (let i = 0; i < dataKeys.length; i++) {
+    tableData.push({ key: dataKeys[i], value: dataValues[i] });
+  }
+
+  const renderTableItem = ({ item }) => (
+    <View style={styles.tableRow}>
+      <Text style={styles.text}>{item.key}</Text>
+      <Text style={styles.text}>{item.value}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollContainer}>
-        <TouchableOpacity style={styles.button} onPress={onBackPress}>
-          <Text style={styles.buttonText}>Back</Text>
-        </TouchableOpacity>
-        <Table
-          borderStyle={{
-            borderWidth: 2,
-            borderColor: "#fff",
-            width: "100%",
-          }}
-        >
-          <Rows data={tableData} textStyle={styles.text} />
-        </Table>
-      </ScrollView>
+      <TouchableOpacity style={styles.button} onPress={onBackPress}>
+        <Text style={styles.buttonText}>Back</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={onGraphicsPress}>
+        <Text style={styles.buttonText}>Graphics</Text>
+      </TouchableOpacity>
+
+      <FlatList
+        data={tableData}
+        renderItem={renderTableItem}
+        keyExtractor={(item) => item.key.toString()}
+        style={styles.flatList}
+      />
     </View>
   );
 };
@@ -62,27 +43,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-  scrollContainer: {
-    width: "90%",
+  tableRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
+    padding: 10,
   },
   text: {
     color: "#fff",
     fontSize: 18,
-    margin: 6,
   },
   button: {
-    backgroundColor: "black", // Fondo negro
+    backgroundColor: "black",
     width: "100%",
-    marginBottom:"10px",
+    marginBottom: 10,
     alignItems: "center",
     justifyContent: "center",
-    borderColor: "#fff", // Borde blanco
+    borderColor: "#fff",
     borderWidth: 2,
-
   },
   buttonText: {
-    color: "#fff", // Texto en blanco
+    color: "#fff",
     fontSize: 18,
+  },
+  flatList: {
+    width: "90%",
   },
 });
 
